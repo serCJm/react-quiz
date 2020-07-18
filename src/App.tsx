@@ -4,7 +4,7 @@ import { fetchQuizQuestions, Difficulty, QuestionState } from "./API";
 
 const TOTAL_QUESTIONS = 10;
 
-type AnswerObject = {
+export type AnswerObject = {
 	question: string;
 	answer: string;
 	correct: boolean;
@@ -40,9 +40,31 @@ function App() {
 		setLoading(false);
 	}
 
-	function checkAnswer(e: React.MouseEvent<HTMLButtonElement>) {}
+	function checkAnswer(e: React.MouseEvent<HTMLButtonElement>) {
+		if (!gameOver) {
+			const answer = e.currentTarget.value;
+			const correct = questions[number].correct_answer === answer;
+			if (correct) {
+				setScore((prev) => prev + 1);
+			}
+			const answerObject = {
+				question: questions[number].question,
+				answer,
+				correct,
+				correctAnswer: questions[number].correct_answer,
+			};
+			setUserAnswers((prev) => [...prev, answerObject]);
+		}
+	}
 
-	function nextQuestion() {}
+	function nextQuestion() {
+		const nextQuestion = number + 1;
+		if (nextQuestion === TOTAL_QUESTIONS) {
+			setGameOver(true);
+		} else {
+			setNumber(nextQuestion);
+		}
+	}
 
 	return (
 		<div className="App">
